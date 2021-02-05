@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { auth } from "./Firebase";
 import { login } from "./features/userSlice";
 import "./Login.css";
@@ -34,10 +35,24 @@ const Login = () => {
             );
           });
       })
-      .catch((error) => alert(error.message));
+      .catch((error) => alert(error));
   };
+
   const logInToApp = (e) => {
     e.preventDefault();
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then((userAuth) => {
+        dispatch(
+          login({
+            email: userAuth.user.email,
+            uid: userAuth.user.uid,
+            displayName: userAuth.user.displayName,
+            profileUrl: userAuth.user.photoURL,
+          })
+        );
+      })
+      .catch((error) => alert(error));
   };
 
   return (
